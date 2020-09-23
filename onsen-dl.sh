@@ -45,7 +45,7 @@ case $1 in
     [1-6])
     for dow_heute in `seq 0 $((${#m3u8_id[@]} - 1))`
     do
-      [[ `echo "$eidx" | sed -n ${dow[$dow_heute]}p | grep $dateu` ]] && echo "$eidx" | sed -n ${m3u8_id[$dow_heute]}p | grep -Po '(?<=/[0-9]{6}/).+?(?=\.mp)'
+      [[ `echo "$eidx" | sed -n ${dow[$dow_heute]}p | grep $dateu` ]] && echo "$eidx" | sed -n ${m3u8_id[$dow_heute]}p | grep -Po '(?<=/[0-9]{6}/).+?(?=\.mp)' | xargs -ILISTE echo "LISTE.mp4"
     done | tac
     ;;
     *)
@@ -82,7 +82,7 @@ case $1 in
   ;;
   # download
   *)
-  m3u8=`echo "$eidx" | grep -o http.*m3u8 | grep /$1`
+  m3u8=`echo "$eidx" | grep -o http.*m3u8 | grep $1`
   # not found
   if [ ! "$m3u8" ]; then
     echo "missing $1"
