@@ -2,7 +2,7 @@
 
 outdir=$HOME/Downloads
 nkf='nkf --fb-skip -m0 -Z1 -Lu'
-ver=1.2.1
+ver=1.2.2
 
 usage() {
   echo "onsen-dl.sh($ver): Internet Radio Station<onsen> downloader"
@@ -49,7 +49,7 @@ case $1 in
     done | tac
     ;;
     *)
-    echo "$eidx" | grep -Po '(?<=/[0-9]{6}/).+?(?=\.mp)' | tac
+    echo "$eidx" | grep -Po '(?<=/[0-9]{6}/).+?(?=\.mp)' | xargs -ILISTE echo "LISTE.mp4" | tac
     ;;
   esac
   ;;
@@ -88,7 +88,7 @@ case $1 in
     echo "missing $1"
   fi
   # download program
-  if [ $m3u8 ]; then
+  if [ $m3u8 ] 2>/dev/null; then
     # -f option
     [[ `echo $* | grep -e '-f'` ]] && optarg_f=`echo $* | grep -Po '(?<= -f).+?(?=( -|$))' | tr -d ' '`
     [[ `ffmpeg -i $m3u8 2>&1 | grep 'Video'` ]] && optarg_f=mp4
@@ -126,11 +126,14 @@ case $1 in
       ffmpeg -i $m3u8 -loglevel error -bsf:a aac_adtstoasc -acodec copy $vc $outdir/$fn".$optarg_f"
       ;;
     esac
+  else
+    echo "error program name, try fullname=`eval $0 -l9 | grep $1 | tr '\n' ' ' | sed 's/ $//'`"
+    exit 1
   fi
   # downloads jpg
-  if [ "`echo $* | grep -E '(--with-jpg|-i)'`" ]; then
+  if [[ `echo $* | grep -E '(--with-jpg|-i)'` ]]; then
     imgfn=$fn
-    progname=`echo "$eidx" | grep $1 | grep -Po '(?<=directory_name":").+?(?=")'`
+    progname=`echo "$eidx" | grep $1 | grep -Po "(?<=/[0-9]{6}/).+?(?=[0-9]{6})"`
     pagesource=`curl -s https://www.onsen.ag/program/$progname | perl -pe 's/(,|\\\n)/\n/g; s/\\\u002F/\//g'`
     # jpg
     jpg=(`echo "$pagesource" | sed -n -E '/role_of_performer/s/(^.+url:"|"}$)//gp'`)
@@ -161,4 +164,3 @@ case $1 in
   echo "$$ [download] `date +'%m-%d %H:%M:%S'` successful"
   ;;
 esac
-
