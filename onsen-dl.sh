@@ -141,10 +141,10 @@ case $1 in
     for infoitem in `seq 0 $((${#jpg[@]} - 1))`
     do
       if [ ! -f $outdir/${imgfn}_${jpg[$infoitem]#*=}.jpg ]; then
-        echo -n "$$ "; wget -nv ${jpg[$infoitem]} -O $outdir/${imgfn}_${jpg[$infoitem]#*=}.jpg
+        echo -n "$$ "; wget -nv ${jpg[$infoitem]} -O $outdir/${imgfn}_${jpg[$infoitem]#*=}.jpg 2>&1
       else
         jpgfn=`echo ${jpg[$infoitem]} | grep -Po '(?<=production/).+?(?=/)'`
-        echo -n "$$ "; wget -nv ${jpg[$infoitem]} -O $outdir/${imgfn}_${jpg[$infoitem]#*=}_${jpgfn}.jpg
+        echo -n "$$ "; wget -nv ${jpg[$infoitem]} -O $outdir/${imgfn}_${jpg[$infoitem]#*=}_${jpgfn}.jpg 2>&1
       fi
     done 2>&1
     # png withoutbanner
@@ -152,10 +152,10 @@ case $1 in
     for wobanner in `seq 0 $((${#png[@]} - 1))`
     do
       if [ ! -f $outdir/${imgfn}_${png[$wobanner]#*=}.png ]; then
-        echo -n "$$ "; wget -nv ${png[$wobanner]} -O $outdir/${imgfn}_${png[$wobanner]#*=}.png
+        echo -n "$$ "; wget -nv ${png[$wobanner]} -O $outdir/${imgfn}_${png[$wobanner]#*=}.png 2>&1
       else
         pngfn=`echo ${png[$wobanner]} | grep -Po '(?<=production/).+?(?=/)'`
-        echo -n "$$ "; wget -nv ${png[$wobanner]} -O $outdir/${imgfn}_${png[$wobanner]#*=}_${pngfn}.png
+        echo -n "$$ "; wget -nv ${png[$wobanner]} -O $outdir/${imgfn}_${png[$wobanner]#*=}_${pngfn}.png 2>&1
       fi
     done 2>&1
     # html to text
@@ -164,3 +164,4 @@ case $1 in
   echo "$$ [download] `date +'%m-%d %H:%M:%S'` successful"
   ;;
 esac
+
