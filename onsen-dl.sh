@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 outdir=$HOME/Downloads
-nkf='nkf --fb-skip -m0 -Z1 -Lu'
-ver=1.2.2
+nkf='nkf --fb-skip -m0 -Z1 --euc -Lu'
+ver=1.2.3
 
 usage() {
   echo "onsen-dl.sh($ver): Internet Radio Station<onsen> downloader"
@@ -31,12 +31,14 @@ eidx=`curl -s https://www.onsen.ag/web_api/programs | perl -pe 's/({"id":)/\n$1/
 
 case $1 in
   # list
-  -l|-l?)
+  -l|-l*)
   if [ ! $2 ]; then
-    [ "${#1}" -gt 2 ] && dateu=${1: -1} || dateu=`date +%u`
+    [ "${#1}" -gt 2 ] && dateu=${1/-l} || dateu=`date "-d ${1/-1}" +%u`
   else
     dateu=$2
   fi
+  [ "$dateu" = 'satsun' ] && dateu=6
+  [[ $dateu != [0-9] ]] && dateu=`date "-d $dateu" +%u 2>/dev/null`
   [[ $dateu =~ [07] ]] && dateu=6
   [[ $dateu != [1-6] ]] && dateu=9
   dow=(`echo "$eidx" | sed -n '/delivery_day_of_week/='`)
