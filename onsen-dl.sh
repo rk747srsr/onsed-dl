@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 outdir=$HOME/Downloads
-nkf='nkf --fb-skip -m0 -Z1 --euc -Lu'
+nkf='nkf --fb-skip -m0 -Z1 -Lu'
 ver=1.2.3
 
 usage() {
@@ -37,10 +37,9 @@ case $1 in
   else
     dateu=$2
   fi
-  [ "$dateu" = 'satsun' ] && dateu=6
-  [[ $dateu != [0-9] ]] && dateu=`date "-d $dateu" +%u 2>/dev/null`
-  [[ $dateu =~ [07] ]] && dateu=6
+  [[ $dateu =~ ([07]|sun|satsun) ]] && dateu=6
   [[ $dateu != [1-6] ]] && dateu=9
+  [[ $dateu != [0-9] ]] && dateu=`date "-d $dateu" +%u 2>/dev/null`
   dow=(`echo "$eidx" | sed -n '/delivery_day_of_week/='`)
   m3u8_id=(`echo "$eidx" | sed -n '/playlist/='`)
   case $dateu in
